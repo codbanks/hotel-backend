@@ -1,0 +1,12 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block content %}
+  <form method="get" style="margin-bottom: 1em;">
+    <label for="id_checkout_date">Checkout Date:</label>
+    <input type="date" name="checkout_date" id="id_checkout_date" value="{{ request.GET.checkout_date }}">
+    <input type="submit" value="Filter">
+    <a href="{% url 'admin:HouseStatusReport_housestatusreport_changelist' %}">Clear</a>
+  </form>
+  {{ block.super }}
+{% endblock %}

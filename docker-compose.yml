@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: hotel_db
+      POSTGRES_USER: hotel_user
+      POSTGRES_PASSWORD: hotel_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  web:
+    build: ./backend
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=hotel_db
+      - POSTGRES_USER=hotel_user
+      - POSTGRES_PASSWORD=hotel_pass
+      - REDIS_HOST=redis
+
+  frontend:
+    build: ./frontend/hotel-frontend
+    command: npm start
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:

@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'channels',
     'corsheaders', 
-    'admin_tabler',
+
     
     # Local apps
     'Invoice',

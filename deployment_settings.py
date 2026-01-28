@@ -20,9 +20,9 @@ MIDDLEWARE = [
    'django.contrib.messages.middleware.MessagesMiddleware',
 ]
 
-# CORS ALLOWED ORIGINS = [
-#     'http://localhost:5173'
-#]
+CORS ALLOWED ORIGINS = [
+    'https://hotel-frontend-1-yf6r.onrender.com'
+]
 
 STORAGES = {
   'default':{

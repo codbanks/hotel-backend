@@ -5,6 +5,7 @@ Updated for production deployment on Render.
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,9 +14,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET', 'django-insecure-l7ryp%+-yu9$=_i#orj+s%*eyxk8s7sj0iznvaon7z52*9c^2-')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["*"] 
+# Add your backend domain and local hosts
+ALLOWED_HOSTS = [
+    "hotel-backend-h8nz.onrender.com",
+    "localhost",
+    "127.0.0.1",
+    "*", 
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -47,7 +54,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # Must be above CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -77,7 +84,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = "config.asgi.application"
 
 # Database
-# Note: SQLite data will reset on Render every time you deploy.
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -101,16 +107,30 @@ REST_FRAMEWORK = {
     ),
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
 # -------------------------------------------------------------------
-# CORS setup (Updated for your live Frontend)
+# CORS & CSRF setup (Crucial for Login to work)
 # -------------------------------------------------------------------
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://codbanks.github.io", # ✅ Your GitHub Pages URL
+    "https://hotel-frontend-1-yf6r.onrender.com", # ✅ Your Render Frontend
+    "https://codbanks.github.io", 
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://hotel-frontend-1-yf6r.onrender.com", # ✅ Allowed for login POST requests
+    "https://hotel-backend-h8nz.onrender.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# -------------------------------------------------------------------
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
